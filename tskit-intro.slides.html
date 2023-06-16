@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Peter Ralph, University of Oregon">
+  <title>A practical introduction to the tree sequence:</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/simple.css" id="theme">
+  <style type="text/css">
+
+  .reveal { font-size: 30px; }
+
+  .reveal h1 { font-size: 1.5em; } 
+
+  .reveal h2 { font-size: 1.2em; } 
+
+  .reveal .slides { text-align: left; }
+
+  .reveal .slides figure { text-align: center; }
+
+  .centered p { text-align: center; }
+
+  /* apply this to the columns div */
+  div.vcentered { display: flex; align-items: center; }
+
+  .caption p { font-size: 75%; }
+
+  .greyed { color: #4444; }
+
+  div.floatright { float: right; text-align: right; }
+
+  .reveal figcaption { display: none; }
+
+  .reveal img { border: none; }
+
+  .reveal section img { border: none; }
+
+  .MathJax_Display { margin: 0; }
+
+  img.finger { vertical-align: text-top; }
+
+  </style>
+
+  <div style="display: none">
+  \[
+  \newcommand{\E}{\mathbb{E}}
+  \renewcommand{\P}{\mathbb{P}}
+  \DeclareMathOperator{\var}{var}
+  \]
+  </div>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">A practical introduction to the tree sequence:</h1>
+  <p class="author">Peter Ralph, University of Oregon</p>
+  <p class="date">June 2023</p>
+</section>
+
+<section>
+<section id="genomes-and-genealogies" class="title-slide slide level1">
+<h1>Genomes and genealogies</h1>
+
+</section>
+<section id="genomes" class="slide level2">
+<h2>Genomes</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li>are very big (<span class="math inline">\(10^7\)</span>–<span
+class="math inline">\(10^{12}\)</span> nucleotides)</li>
+<li>reflect past <em>history</em> and <em>process</em></li>
+</ul>
+<p>. . .</p>
+<p><em>For example, in humans:</em></p>
+<ul>
+<li>out of <span class="math inline">\(3 \times 10^9\)</span>
+nucleotides,</li>
+<li>individuals differ at around 5 million sites</li>
+<li>upcoming datasets: millions of individuals at tens of millions of
+varying sites <!-- 88 million varying sites in 2500 genomes
+     1000G: https://www.nature.com/articles/nature15393 --></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="centered">
+<figure>
+<img data-src="figs/genome_cost.png"
+alt="https://www.genome.gov/about-genomics/fact-sheets/DNA-Sequencing-Costs-Data" />
+<figcaption
+aria-hidden="true">https://www.genome.gov/about-genomics/fact-sheets/DNA-Sequencing-Costs-Data</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<p>A data structure is…</p>
+<div class="fragment">
+<p><strong>succinct</strong> if it only stores each bit of information
+once.</p>
+</div>
+<div class="fragment">
+<p><strong>descriptive</strong> if it reflects the underlying
+process.</p>
+</div>
+<div class="fragment">
+<p><strong>So:</strong> let’s think about the process that generated the
+data!</p>
+</div>
+</section>
+<section id="meiosis-recombination" class="slide level2">
+<h2>Meiosis &amp; Recombination</h2>
+<figure>
+<img data-src="figs/recombination-cartoon-crop.png"
+alt="recombination" />
+<figcaption aria-hidden="true">recombination</figcaption>
+</figure>
+<div class="centered">
+<p>You have two copies of each chromosome, one from each parent.</p>
+</div>
+<div class="fragment">
+<div class="centered">
+<p>When you make a gamete, the copies <em>recombine</em>,</p>
+<p>and copying errors lead to <em>mutations</em>.</p>
+</div>
+</div>
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<p>Your two copies of the genome were inherited, noisily, from your two
+parents,</p>
+<div class="fragment">
+<p>and from your four grandparents,</p>
+</div>
+<div class="fragment">
+<p>and your eight great-grandparents</p>
+</div>
+<div class="fragment">
+<p>and your sixteen great-great-grandparents</p>
+</div>
+<div class="fragment">
+<p><strong>but:</strong> you have not inherited <em>any</em> genome from
+<em>most</em> of your ancestors, past about 10 generations ago.</p>
+</div>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<div class="centered">
+<p><img data-src="figs/gcbias/parents_grandparents.png"
+style="width:60.0%" /></p>
+<div class="caption">
+<p>from <a
+href="https://gcbias.org/2013/11/11/how-does-your-number-of-genetic-ancestors-grow-back-over-time/">gcbias.org</a></p>
+</div>
+</div>
+</section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+<div class="centered">
+<p><img data-src="figs/gcbias/male_line.png" style="width:60.0%" /></p>
+<div class="caption">
+<p>from <a
+href="https://gcbias.org/2013/11/11/how-does-your-number-of-genetic-ancestors-grow-back-over-time/">gcbias.org</a></p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="looking-backwards" class="title-slide slide level1">
+<h1>Looking backwards</h1>
+
+</section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Tracing back the ancestry of some chromosomes:</p>
+<ul>
+<li>blocks labeled by who inherits from them</li>
+<li><span class="greyed"> blocks can <em>split</em> </span></li>
+<li><span class="greyed"> or <em>coalesce</em>, </span></li>
+<li><span class="greyed"> and <em>mutations</em> lead to differences.
+</span></li>
+</ul>
+<p><span class="greyed"> Result: a <em>labeled genealogy</em> containing
+all the <em>genealogical trees</em>. </span></p>
+</div><div class="column" style="width:50%;">
+<div class="floatright">
+<p><img data-src="figs/frag_coal/fragmentation_coalescence.1.png"
+style="width:80.0%" /></p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-5" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Tracing back the ancestry of some chromosomes:</p>
+<ul>
+<li>blocks labeled by who inherits from them</li>
+<li>blocks can <em>split</em></li>
+<li><span class="greyed"> or <em>coalesce</em>, </span></li>
+<li><span class="greyed"> and <em>mutations</em> lead to differences.
+</span></li>
+</ul>
+<p><span class="greyed"> Result: a <em>labeled genealogy</em> containing
+all the <em>genealogical trees</em>. </span></p>
+</div><div class="column" style="width:50%;">
+<div class="floatright">
+<p><img data-src="figs/frag_coal/fragmentation_coalescence.2.png"
+style="width:80.0%" /></p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-6" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Tracing back the ancestry of some chromosomes:</p>
+<ul>
+<li>blocks labeled by who inherits from them</li>
+<li>blocks can <em>split</em></li>
+<li>or <em>coalesce</em>,</li>
+<li><span class="greyed"> and <em>mutations</em> lead to differences.
+</span></li>
+</ul>
+<p><span class="greyed"> Result: a <em>labeled genealogy</em> containing
+all the <em>genealogical trees</em>. </span></p>
+</div><div class="column" style="width:50%;">
+<div class="floatright">
+<p><img data-src="figs/frag_coal/fragmentation_coalescence.3.png"
+style="width:80.0%" /></p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-7" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Tracing back the ancestry of some chromosomes:</p>
+<ul>
+<li>blocks labeled by who inherits from them</li>
+<li>blocks can <em>split</em></li>
+<li>or <em>coalesce</em>,</li>
+<li><span class="greyed"> and <em>mutations</em> lead to differences.
+</span></li>
+</ul>
+<p><span class="greyed"> Result: a <em>labeled genealogy</em> containing
+all the <em>genealogical trees</em>. </span></p>
+</div><div class="column" style="width:50%;">
+<div class="floatright">
+<p><img data-src="figs/frag_coal/fragmentation_coalescence.4.png"
+style="width:80.0%" /></p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-8" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Tracing back the ancestry of some chromosomes:</p>
+<ul>
+<li>blocks labeled by who inherits from them</li>
+<li>blocks can <em>split</em></li>
+<li>or <em>coalesce</em>,</li>
+<li><span class="greyed"> and <em>mutations</em> lead to differences.
+</span></li>
+</ul>
+<p><span class="greyed"> Result: a <em>labeled genealogy</em> containing
+all the <em>genealogical trees</em>. </span></p>
+</div><div class="column" style="width:50%;">
+<div class="floatright">
+<p><img data-src="figs/frag_coal/fragmentation_coalescence.5.png"
+style="width:80.0%" /></p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-9" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Tracing back the ancestry of some chromosomes:</p>
+<ul>
+<li>blocks labeled by who inherits from them</li>
+<li>blocks can <em>split</em></li>
+<li>or <em>coalesce</em>,</li>
+<li><span class="greyed"> and <em>mutations</em> lead to differences.
+</span></li>
+</ul>
+<p><span class="greyed"> Result: a <em>labeled genealogy</em> containing
+all the <em>genealogical trees</em>. </span></p>
+</div><div class="column" style="width:50%;">
+<div class="floatright">
+<p><img data-src="figs/frag_coal/fragmentation_coalescence.6.png"
+style="width:80.0%" /></p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-10" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Tracing back the ancestry of some chromosomes:</p>
+<ul>
+<li>blocks labeled by who inherits from them</li>
+<li>blocks can <em>split</em></li>
+<li>or <em>coalesce</em>,</li>
+<li>and <em>mutations</em> lead to differences.</li>
+</ul>
+<p><span class="greyed"> Result: a <em>labeled genealogy</em> containing
+all the <em>genealogical trees</em>. </span></p>
+</div><div class="column" style="width:50%;">
+<div class="floatright">
+<p><img data-src="figs/frag_coal/fragmentation_coalescence.7.png"
+style="width:80.0%" /></p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-11" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Tracing back the ancestry of some chromosomes:</p>
+<ul>
+<li>blocks labeled by who inherits from them</li>
+<li>blocks can <em>split</em></li>
+<li>or <em>coalesce</em>,</li>
+<li>and <em>mutations</em> lead to differences.</li>
+</ul>
+<p>Result: a <em>labeled genealogy</em> containing all the
+<em>genealogical trees</em>.</p>
+</div><div class="column" style="width:50%;">
+<div class="floatright">
+<p><img data-src="figs/frag_coal/fragmentation_coalescence.7.png"
+style="width:80.0%" /></p>
+</div>
+</div>
+</div>
+<!-- explain tree sequences and why they are so efficient (5min) -->
+</section></section>
+<section>
+<section id="the-tree-sequence" class="title-slide slide level1">
+<h1>The tree sequence</h1>
+
+</section>
+<section id="history-is-a-sequence-of-trees" class="slide level2">
+<h2>History is a sequence of trees</h2>
+<p>For a set of sampled chromosomes, at each position along the genome
+there is a genealogical tree that says how they are related.</p>
+<div class="fragment">
+<figure>
+<img data-src="figs/ts_ex/sim_ts.svg" style="width:100.0%"
+alt="Trees along a chromosome" />
+<figcaption aria-hidden="true">Trees along a chromosome</figcaption>
+</figure>
+</div>
+</section>
+<section class="slide level2">
+
+<p>The <strong>succinct tree sequence</strong></p>
+<div class="floatright">
+<p>is a way to succinctly describe this, er, sequence of trees</p>
+<p><em>and</em> the resulting genome sequences.</p>
+</div>
+<div class="fragment">
+<div class="floatright">
+<figure>
+<img data-src="figs/jerome.jpeg" style="width:50.0%"
+alt="jerome kelleher" />
+<figcaption aria-hidden="true">jerome kelleher</figcaption>
+</figure>
+<div class="caption">
+<p>by Jerome Kelleher, in <a
+href="http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004842">Kelleher,
+Etheridge, and McVean</a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="example-three-samples-two-trees-two-variant-sites"
+class="slide level2">
+<h2>Example: three samples; two trees; two variant sites</h2>
+<figure>
+<img data-src="figs/example_tree_sequence.png"
+alt="Example tree sequence" />
+<figcaption aria-hidden="true">Example tree sequence</figcaption>
+</figure>
+</section>
+<section id="nodes-and-edges" class="slide level2">
+<h2>Nodes and edges</h2>
+<dl>
+<dt>Edges</dt>
+<dd>
+<p>Who inherits from who.</p>
+<p>Records: interval (left, right); parent node; child node.</p>
+</dd>
+<dt>Nodes</dt>
+<dd>
+<p>The ancestors those happen in.</p>
+<p>Records: time ago (of birth); ID (implicit).</p>
+</dd>
+</dl>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="nodes_edges_walkthrough/nodes_edges_walkthrough.0.png"
+alt="Building a tree sequence" />
+<figcaption aria-hidden="true">Building a tree sequence</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="nodes_edges_walkthrough/nodes_edges_walkthrough.1.png"
+alt="Building a tree sequence" />
+<figcaption aria-hidden="true">Building a tree sequence</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="nodes_edges_walkthrough/nodes_edges_walkthrough.2.png"
+alt="Building a tree sequence" />
+<figcaption aria-hidden="true">Building a tree sequence</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="nodes_edges_walkthrough/nodes_edges_walkthrough.3.png"
+alt="Building a tree sequence" />
+<figcaption aria-hidden="true">Building a tree sequence</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="nodes_edges_walkthrough/nodes_edges_walkthrough.4.png"
+alt="Building a tree sequence" />
+<figcaption aria-hidden="true">Building a tree sequence</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="nodes_edges_walkthrough/nodes_edges_walkthrough.5.png"
+alt="Building a tree sequence" />
+<figcaption aria-hidden="true">Building a tree sequence</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="nodes_edges_walkthrough/nodes_edges_walkthrough.6.png"
+alt="Building a tree sequence" />
+<figcaption aria-hidden="true">Building a tree sequence</figcaption>
+</figure>
+</section>
+<section id="sites-and-mutations" class="slide level2">
+<h2>Sites and mutations</h2>
+<dl>
+<dt>Mutations</dt>
+<dd>
+<p>When state changes along the tree.</p>
+<p>Records: site it occured at; node it occurred in; derived state.</p>
+</dd>
+<dt>Sites</dt>
+<dd>
+<p>Where mutations fall on the genome.</p>
+<p>Records: genomic position; ancestral (root) state; ID (implicit).</p>
+</dd>
+</dl>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="sites_muts_walkthrough/sites_muts_walkthrough.0.png"
+alt="Adding mutations" />
+<figcaption aria-hidden="true">Adding mutations</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="sites_muts_walkthrough/sites_muts_walkthrough.1.png"
+alt="Adding mutations" />
+<figcaption aria-hidden="true">Adding mutations</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="sites_muts_walkthrough/sites_muts_walkthrough.2.png"
+alt="Adding mutations" />
+<figcaption aria-hidden="true">Adding mutations</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="sites_muts_walkthrough/sites_muts_walkthrough.3.png"
+alt="Adding mutations" />
+<figcaption aria-hidden="true">Adding mutations</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="sites_muts_walkthrough/sites_muts_walkthrough.4.png"
+alt="Adding mutations" />
+<figcaption aria-hidden="true">Adding mutations</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<p><strong>The result:</strong> an encoding of the genomes <em>and</em>
+all the genealogical trees.</p>
+<div class="centered">
+<figure>
+<img data-src="figs/example_tree_sequence.png"
+alt="Example tree sequence" />
+<figcaption aria-hidden="true">Example tree sequence</figcaption>
+</figure>
+</div>
+</section></section>
+<section>
+<section id="hows-it-work" class="title-slide slide level1">
+<h1>How’s it work?</h1>
+
+</section>
+<section id="file-sizes" class="slide level2">
+<h2>File sizes</h2>
+<div class="centered">
+<figure>
+<img data-src="figs/tsinfer_sizes.png" style="width:90.0%"
+alt="file sizes" />
+<figcaption aria-hidden="true">file sizes</figcaption>
+</figure>
+</div>
+<div class="caption">
+<p>100Mb chromosomes; from <a
+href="https://www.nature.com/articles/s41588-019-0483-y">Kelleher et al
+2018, <em>Inferring whole-genome histories in large population
+datasets</em></a>, Nature Genetics</p>
+</div>
+<!-- Estimated sizes of files required to store the genetic variation data for a
+simulated human-like chromosome (100 megabases) for up to 10 billion haploid
+(5 billion diploid) samples. Simulations were run for 10 1 up to 10 7 haplotypes
+using msprime [Kelleher et al., 2016], and the sizes of the resulting files plotted
+(points). -->
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="figs/ts_ex/tree_sequence_genotypes.png"
+alt="genotypes" />
+<figcaption aria-hidden="true">genotypes</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="figs/ts_ex/tree_sequence_genotype_and_tree.png"
+alt="genotypes and a tree" />
+<figcaption aria-hidden="true">genotypes and a tree</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="figs/ts_ex/tree_sequence_next_genotype_and_tree.png"
+alt="genotypes and the next tree" />
+<figcaption aria-hidden="true">genotypes and the next tree</figcaption>
+</figure>
+</section>
+<section id="for-n-samples-genotyped-at-m-sites" class="slide level2">
+<h2>For <span class="math inline">\(N\)</span> samples genotyped at
+<span class="math inline">\(M\)</span> sites</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><em>Genotype matrix</em>: <span
+class="math inline">\(O(NM)\)</span></p>
+<p><span class="math inline">\(N \times M\)</span> things.</p>
+</div><div class="column" style="width:50%;">
+<p><em>Tree sequence:</em> <span class="math inline">\(O(N + T +
+M)\)</span></p>
+<ul>
+<li><span class="math inline">\(2N-2\)</span> edges for the first
+tree</li>
+<li><span class="math inline">\(\sim 4\)</span> edges per each of <span
+class="math inline">\(T\)</span> trees</li>
+<li><span class="math inline">\(M\)</span> mutations</li>
+</ul>
+</div>
+</div>
+<figure>
+<img data-src="figs/ts_ex/tree_sequence_genotype_and_tree.png"
+style="width:70.0%" alt="genotypes and a tree" />
+<figcaption aria-hidden="true">genotypes and a tree</figcaption>
+</figure>
+</section>
+<section id="fast-genotype-statistics" class="slide level2">
+<h2>Fast genotype statistics</h2>
+<div class="centered">
+<figure>
+<img data-src="figs/treestats/benchmarks_without_copy_longer_genome.png"
+style="width:70.0%" alt="efficiency of treestat computation" />
+<figcaption aria-hidden="true">efficiency of treestat
+computation</figcaption>
+</figure>
+</div>
+<div class="caption">
+<p>from <a
+href="https://www.biorxiv.org/content/10.1101/779132v1?rss=1">R.,
+Thornton and Kelleher 2019, <em>Efficiently summarizing relationships in
+large samples</em></a>, bioRxiv</p>
+</div>
+</section></section>
+<section>
+<section id="wrap-up" class="title-slide slide level1">
+<h1>Wrap up</h1>
+
+</section>
+<section id="software" class="slide level2">
+<h2>Software</h2>
+<div class="columns">
+<div class="column">
+<p>Everything is efficient, open, and tested.</p>
+<figure>
+<img data-src="figs/tskit_logo.png" style="width:100.0%"
+alt="tskit logo" />
+<figcaption aria-hidden="true">tskit logo</figcaption>
+</figure>
+</div><div class="column">
+<ul>
+<li><p><code>tskit</code>: tree sequence tools</p>
+<p><a
+href="https://github.com/tskit-dev/tskit">github:tskit-dev/tskit</a></p></li>
+<li><p><code>stdpopsim</code>: a library of “standard” simulation
+tools</p>
+<p><a
+href="https://github.com/popsim-consortium/stdpopsim">github:popsim-consortium/stdpopsim</a></p></li>
+<li><p><code>msprime</code>: coalescent simulator,</p>
+<p><a
+href="https://github.com/tskit-dev/msprime">github:tskit-dev/msprime</a></p></li>
+<li><p><code>SLiM</code> : forwards evolutionary simulator</p>
+<p><a href="https://messerlab.org/slim/">messerlab.org/slim</a></p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="thanks" class="slide level2">
+<h2>Thanks</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>Jerome Kelleher</li>
+<li>Yan Wong</li>
+<li>Ben Jeffery</li>
+<li>Ben Haller</li>
+<li>Georgia Tsambos</li>
+<li>Jared Galloway</li>
+<li>Nate Pope</li>
+<li>Gerjan Bisschop</li>
+<li>Shing Hei Zhan</li>
+<li>Ava Bamforth</li>
+<li>Halley Fritze</li>
+<li><code>tskit-dev</code> and <code>popsim-consortium</code></li>
+</ul>
+</div><div class="column">
+<p>Funding: NSF, NIH, UO (PR); Wellcome Trust (JK);</p>
+<p>Slides with <a href="http://hakim.se">reveal.js</a> and <a
+href="https://pandoc.org/">pandoc</a>.</p>
+<figure>
+<img data-src="figs/tskit_logo.png" style="width:50.0%"
+alt="tskit logo" />
+<figcaption aria-hidden="true">tskit logo</figcaption>
+</figure>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: true,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>

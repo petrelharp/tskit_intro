@@ -1,0 +1,36 @@
+<style type="text/css">
+
+.reveal { font-size: 30px; }
+
+.reveal h1 { font-size: 1.5em; } 
+
+.reveal h2 { font-size: 1.2em; } 
+
+.reveal .slides { text-align: left; }
+
+.reveal .slides figure { text-align: center; }
+
+.centered p { text-align: center; }
+
+/* apply this to the columns div */
+div.vcentered { display: flex; align-items: center; }
+
+.caption p { font-size: 75%; }
+
+.greyed { color: #4444; }
+
+div.floatright { float: right; text-align: right; }
+
+.reveal figcaption { display: none; }
+
+.reveal img { border: none; }
+
+.reveal section img { border: none; }
+
+.MathJax_Display { margin: 0; }
+
+img.finger { vertical-align: text-top; }
+
+</style>
+
+
