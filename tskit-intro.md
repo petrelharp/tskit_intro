@@ -10,34 +10,14 @@ date: "June 2023"
 
 ## Genomes
 
-::: {.columns}
-::::::: {.column width=50%}
-
 
 - are very big ($10^7$--$10^{12}$ nucleotides)
 - reflect past *history* and *process*
 
-. . .
-
-*For example, in humans:*
-
-- out of $3 \times 10^9$ nucleotides,
-- individuals differ at around 5 million sites
-- upcoming datasets: millions of individuals
-    at tens of millions of varying sites
-<!-- 88 million varying sites in 2500 genomes
-     1000G: https://www.nature.com/articles/nature15393 -->
-
-
-:::
-::::::: {.column width=50%}
 
 ::: {.centered}
 ![https://www.genome.gov/about-genomics/fact-sheets/DNA-Sequencing-Costs-Data](figs/genome_cost.png)
 :::
-
-:::
-:::::::
 
 
 
@@ -69,7 +49,7 @@ reflects the underlying process.
 ![recombination](figs/recombination-cartoon-crop.png)
 
 ::: {.centered}
-You have two copies of each chromosome, 
+You have two copies of each autosome, 
   one from each parent.
 :::
 
