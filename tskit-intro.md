@@ -83,25 +83,29 @@ and copying errors lead to *mutations*.
 
 ## 
 
-Your two copies of the genome
-were inherited, noisily, from your two parents,
+Each two copies of the genome
+were inherited, noisily, from the two parents,
 
 . . .
 
-and from your four grandparents,
+and from the four grandparents,
 
 . . .
 
-and your eight great-grandparents
+and the eight great-grandparents
 
 . . .
 
-and your sixteen great-great-grandparents
+and the sixteen great-great-grandparents
 
 . . .
 
+... but, how much from each of them?
+
+<!--
 **but:** you have not inherited *any* genome from *most* of your ancestors,
 past about 10 generations ago.
+-->
 
 ## 
 
@@ -114,6 +118,7 @@ from [gcbias.org](https://gcbias.org/2013/11/11/how-does-your-number-of-genetic-
 :::
 
 
+<!--
 ## 
 
 ::: {.centered}
@@ -124,6 +129,7 @@ from [gcbias.org](https://gcbias.org/2013/11/11/how-does-your-number-of-genetic-
 :::
 :::
 
+-->
 
 
 # Looking backwards
@@ -550,8 +556,102 @@ $N \times M$ things.
 :::
 
 ::: {.caption}
-from [R., Thornton and Kelleher 2019, *Efficiently summarizing relationships in large samples*](https://www.biorxiv.org/content/10.1101/779132v1?rss=1), bioRxiv
+from [R., Thornton and Kelleher 2020, *Efficiently summarizing relationships in large samples*](https://doi.org/10.1534/genetics.120.303253), *Genetics*
 :::
+
+# In SLiM
+
+## The main idea
+
+If we *record the tree sequence*
+that relates everyone to everyone else,
+
+after the simulation is over we can put neutral mutations down on the trees.
+
+. . .
+
+Since neutral mutations don't affect demography,
+
+this is *equivalent* to having kept track of them throughout.
+
+------------
+
+This means recording the entire genetic history of **everyone** in the population, **ever**.
+
+.  . .
+
+It is *not* clear this is a good idea.
+
+
+## Tree recording strategy
+
+Every time an individual is born, we must:
+
+::: incremental
+
+1. add each gamete to the Node Table,
+2. add entries to the Edge Table
+    recording which parent each gamete inherited each bit of genome from, and
+3. add any new selected mutations to the Mutation Table 
+    and (if necessary) their locations to the Site Table.
+
+:::
+
+. . .
+
+::: {.columns}
+:::::: {.column width=15%}
+
+![Rightarrow](finger_right.png){width="100%"}
+
+:::
+:::::: {.column width=5%}
+
+:::
+:::::: {.column width=75%}
+
+This produces **waaaaay** too much data.
+
+:::
+::::::
+
+-------------------
+
+We won't end up needing the *entire* history
+of *everyone ever*,
+
+. . .
+
+but we won't know *what* we'll need until later.
+
+. . .
+
+How do we get rid of the extra stuff?
+
+. . .
+
+**Simplification.**
+
+
+----------------
+
+![Trees along a chromosome](figs/ts_ex/big_ts.svg){width=100%}
+
+----------------
+
+![A big tree with some red tips](figs/ts_ex/tree0.svg){width=100%}
+
+----------------
+
+![A big tree with a subtree tips](figs/ts_ex/tree1.svg){width=100%}
+
+----------------
+
+![A smaller tree](figs/ts_ex/tree2.svg){width=100%}
+
+----------------
+
+![Trees along a chromosome](figs/ts_ex/sim_ts.svg){width=100%}
 
 # Wrap up
 

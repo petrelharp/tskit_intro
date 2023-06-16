@@ -151,20 +151,23 @@ alt="recombination" />
 </section>
 <section id="section-1" class="slide level2">
 <h2></h2>
-<p>Your two copies of the genome were inherited, noisily, from your two
+<p>Each two copies of the genome were inherited, noisily, from the two
 parents,</p>
 <div class="fragment">
-<p>and from your four grandparents,</p>
+<p>and from the four grandparents,</p>
 </div>
 <div class="fragment">
-<p>and your eight great-grandparents</p>
+<p>and the eight great-grandparents</p>
 </div>
 <div class="fragment">
-<p>and your sixteen great-great-grandparents</p>
+<p>and the sixteen great-great-grandparents</p>
 </div>
 <div class="fragment">
-<p><strong>but:</strong> you have not inherited <em>any</em> genome from
-<em>most</em> of your ancestors, past about 10 generations ago.</p>
+<p>… but, how much from each of them?</p>
+<!--
+**but:** you have not inherited *any* genome from *most* of your ancestors,
+past about 10 generations ago.
+-->
 </div>
 </section>
 <section id="section-2" class="slide level2">
@@ -177,23 +180,25 @@ style="width:60.0%" /></p>
 href="https://gcbias.org/2013/11/11/how-does-your-number-of-genetic-ancestors-grow-back-over-time/">gcbias.org</a></p>
 </div>
 </div>
-</section>
-<section id="section-3" class="slide level2">
-<h2></h2>
-<div class="centered">
-<p><img data-src="figs/gcbias/male_line.png" style="width:60.0%" /></p>
-<div class="caption">
-<p>from <a
-href="https://gcbias.org/2013/11/11/how-does-your-number-of-genetic-ancestors-grow-back-over-time/">gcbias.org</a></p>
-</div>
-</div>
+<!--
+## 
+
+::: {.centered}
+![](figs/gcbias/male_line.png){width=60%}
+
+::: {.caption}
+from [gcbias.org](https://gcbias.org/2013/11/11/how-does-your-number-of-genetic-ancestors-grow-back-over-time/)
+:::
+:::
+
+-->
 </section></section>
 <section>
 <section id="looking-backwards" class="title-slide slide level1">
 <h1>Looking backwards</h1>
 
 </section>
-<section id="section-4" class="slide level2">
+<section id="section-3" class="slide level2">
 <h2></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -215,7 +220,7 @@ style="width:80.0%" /></p>
 </div>
 </div>
 </section>
-<section id="section-5" class="slide level2">
+<section id="section-4" class="slide level2">
 <h2></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -237,7 +242,7 @@ style="width:80.0%" /></p>
 </div>
 </div>
 </section>
-<section id="section-6" class="slide level2">
+<section id="section-5" class="slide level2">
 <h2></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -259,7 +264,7 @@ style="width:80.0%" /></p>
 </div>
 </div>
 </section>
-<section id="section-7" class="slide level2">
+<section id="section-6" class="slide level2">
 <h2></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -281,7 +286,7 @@ style="width:80.0%" /></p>
 </div>
 </div>
 </section>
-<section id="section-8" class="slide level2">
+<section id="section-7" class="slide level2">
 <h2></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -303,7 +308,7 @@ style="width:80.0%" /></p>
 </div>
 </div>
 </section>
-<section id="section-9" class="slide level2">
+<section id="section-8" class="slide level2">
 <h2></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -325,7 +330,7 @@ style="width:80.0%" /></p>
 </div>
 </div>
 </section>
-<section id="section-10" class="slide level2">
+<section id="section-9" class="slide level2">
 <h2></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -346,7 +351,7 @@ style="width:80.0%" /></p>
 </div>
 </div>
 </section>
-<section id="section-11" class="slide level2">
+<section id="section-10" class="slide level2">
 <h2></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -641,11 +646,119 @@ computation</figcaption>
 </figure>
 </div>
 <div class="caption">
-<p>from <a
-href="https://www.biorxiv.org/content/10.1101/779132v1?rss=1">R.,
-Thornton and Kelleher 2019, <em>Efficiently summarizing relationships in
-large samples</em></a>, bioRxiv</p>
+<p>from <a href="https://doi.org/10.1534/genetics.120.303253">R.,
+Thornton and Kelleher 2020, <em>Efficiently summarizing relationships in
+large samples</em></a>, <em>Genetics</em></p>
 </div>
+</section></section>
+<section>
+<section id="in-slim" class="title-slide slide level1">
+<h1>In SLiM</h1>
+
+</section>
+<section id="the-main-idea" class="slide level2">
+<h2>The main idea</h2>
+<p>If we <em>record the tree sequence</em> that relates everyone to
+everyone else,</p>
+<p>after the simulation is over we can put neutral mutations down on the
+trees.</p>
+<div class="fragment">
+<p>Since neutral mutations don’t affect demography,</p>
+<p>this is <em>equivalent</em> to having kept track of them
+throughout.</p>
+</div>
+</section>
+<section class="slide level2">
+
+<p>This means recording the entire genetic history of
+<strong>everyone</strong> in the population, <strong>ever</strong>.</p>
+<div class="fragment">
+<p>It is <em>not</em> clear this is a good idea.</p>
+</div>
+</section>
+<section id="tree-recording-strategy" class="slide level2">
+<h2>Tree recording strategy</h2>
+<p>Every time an individual is born, we must:</p>
+<div>
+<ol type="1">
+<li class="fragment">add each gamete to the Node Table,</li>
+<li class="fragment">add entries to the Edge Table recording which
+parent each gamete inherited each bit of genome from, and</li>
+<li class="fragment">add any new selected mutations to the Mutation
+Table and (if necessary) their locations to the Site Table.</li>
+</ol>
+</div>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:15%;">
+<figure>
+<img data-src="finger_right.png" style="width:100.0%"
+alt="Rightarrow" />
+<figcaption aria-hidden="true">Rightarrow</figcaption>
+</figure>
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="width:75%;">
+<p>This produces <strong>waaaaay</strong> too much data.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p>We won’t end up needing the <em>entire</em> history of <em>everyone
+ever</em>,</p>
+<div class="fragment">
+<p>but we won’t know <em>what</em> we’ll need until later.</p>
+</div>
+<div class="fragment">
+<p>How do we get rid of the extra stuff?</p>
+</div>
+<div class="fragment">
+<p><strong>Simplification.</strong></p>
+</div>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="figs/ts_ex/big_ts.svg" style="width:100.0%"
+alt="Trees along a chromosome" />
+<figcaption aria-hidden="true">Trees along a chromosome</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="figs/ts_ex/tree0.svg" style="width:100.0%"
+alt="A big tree with some red tips" />
+<figcaption aria-hidden="true">A big tree with some red
+tips</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="figs/ts_ex/tree1.svg" style="width:100.0%"
+alt="A big tree with a subtree tips" />
+<figcaption aria-hidden="true">A big tree with a subtree
+tips</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="figs/ts_ex/tree2.svg" style="width:100.0%"
+alt="A smaller tree" />
+<figcaption aria-hidden="true">A smaller tree</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="figs/ts_ex/sim_ts.svg" style="width:100.0%"
+alt="Trees along a chromosome" />
+<figcaption aria-hidden="true">Trees along a chromosome</figcaption>
+</figure>
 </section></section>
 <section>
 <section id="wrap-up" class="title-slide slide level1">

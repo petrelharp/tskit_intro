@@ -5,14 +5,18 @@ initialize() {
    initializeGenomicElementType("g1", m1, 1.0);
    initializeGenomicElement(g1, 0, 9999999);
    initializeRecombinationRate(1e-8);
-   setSeed(123);
+   setSeed(123456);
 }
 
 1 early() {
-   sim.addSubpop("p1", 5);
+   sim.addSubpop("p1", 4);
 }
 
-12 late() {
+1: early() {
+    sim.treeSeqRememberIndividuals(p1.individuals);
+}
+
+27 late() {
    sim.treeSeqOutput("ex.trees");
 }
 

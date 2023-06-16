@@ -4,6 +4,6 @@ SHELL := /bin/bash
 .PHONY : all ne_walkthrough sm_walkthrough
 
 all : example_tree_sequence.png ne_walkthrough sm_walkthrough
-	# $(MAKE) -C frag_coal
+	$(MAKE) -C ts_ex
 
 include ../rules.mk
